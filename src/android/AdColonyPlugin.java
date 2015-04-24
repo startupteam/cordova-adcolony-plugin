@@ -49,6 +49,7 @@ public class AdColonyPlugin extends CordovaPlugin implements AdColonyAdListener,
 	private static final String ACTION_SHOW_VIDEO_AD = "showVideoAd";
 	private static final String ACTION_SHOW_V4VC_VIDEO_AD = "showV4VCVideoAd";
 	private static final String ACTION_CANCEL_AD = "cancelAd";
+	private static final String ACTION_ATTEMPT_FINISHED = "onAdColonyAdAttemptFinished";
 	// TODO: Native Ads
 	// private static final String ACTION_CREATE_NATIVE_AD = "createNativeAd";
 	// private static final String ACTION_REMOVE_NATIVE_AD = "removeNativeAd";
@@ -56,6 +57,7 @@ public class AdColonyPlugin extends CordovaPlugin implements AdColonyAdListener,
 
 	private CallbackContext _videoAdCallbackContext;
 	private CallbackContext _nativeAdCallbackContext;
+	private CallbackContext _closeAdCallbackContext;
 	private boolean _isPreparingVideoAd = false;
 	private boolean _hasInitialized = false;
 
@@ -75,6 +77,9 @@ public class AdColonyPlugin extends CordovaPlugin implements AdColonyAdListener,
 				return true;
 			} else if (action.equals(ACTION_CANCEL_AD)) {
 				execCancelAd(inputs, callbackContext);
+				return true;
+			} else if (action.equals(ACTION_ATTEMPT_FINISHED)) {
+				_closeAdCallbackContext = callbackContext;
 				return true;
 			} else {
 				return false;
@@ -202,6 +207,7 @@ public class AdColonyPlugin extends CordovaPlugin implements AdColonyAdListener,
 
 			if (ad.shown()) {
 				// TODO: Should return the zone ID here
+				_closeAdCallbackContext.success();
 				this.fireEvent("adcompleted", json);
 			} else if (ad.notShown()) {
 				_videoAdCallbackContext.error("Video ad not shown");

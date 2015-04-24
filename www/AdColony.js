@@ -92,6 +92,16 @@ var AdColony = {
 			'cancelAd',
 			[]
 		);
+	},
+
+	onAdColonyAdAttemptFinished: function (completionCallback) {
+		cordova.exec(
+			completionCallback,
+			completionCallback,
+			this.pluginName,
+			'onAdColonyAdAttemptFinished',
+			[]
+		);
 	}
 
 };
